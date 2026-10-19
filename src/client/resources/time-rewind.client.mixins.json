@@ -3,7 +3,8 @@
 	"package": "net.bikash.timerewind.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+		"ExampleClientMixin",
+		"TimeRewindPauseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
