@@ -74,6 +74,16 @@ public class PlayerHistory {
                 return  pitch;
             }
         }
+
+        public void discardNewest(int ticks){
+            for(int i=0; i<ticks && !history.isEmpty(); i++){
+                history.remove();
+            }
+        }
+
+        public void clear(){
+            history.clear();
+        }
     }
 
     

@@ -9,6 +9,8 @@ public class RewindManager {
 private boolean rewinding = false;
 private final PlayerHistory history;
 private int ticksRemaining = 0;
+private int totalTicks = 0;
+
 
 public boolean isRewinding(){
     return rewinding;
@@ -30,7 +32,7 @@ public void setTickRemaining(int ticks){
     ticksRemaining = Math.max(0,ticks);
 }
 
-private RewindManager(PlayerHistory history){
+public RewindManager(PlayerHistory history){
     this.history = history;
 }
 
@@ -49,31 +51,46 @@ return;
     if(history.getRecordedTicks() <= ticks){
         return;
     }
-
+   totalTicks = ticks;
     ticksRemaining = ticks;
     rewinding = true;
 }
 
 public void rewindOneTick(Minecraft client){
-    if(!rewinding || client.player == null){
+    if(!rewinding || client.player == null  || client.level == null){
         return;
     }
+
     LocalPlayer player = client.player;
-    PlayerHistory.Snapshot snapshot = history.getTicksAgo(ticksRemaining);
+    PlayerHistory.Snapshot snapshot = history.getTicksAgo(totalTicks - ticksRemaining + 1);
+
+    
 
     if(snapshot == null){
         stopRewind();
+        ticksRemaining = 0;
+        totalTicks = 0;
         return ;
     }
     player.setPos(snapshot.position());
+    player.setDeltaMovement(0,0,0);
     player.setYRot(snapshot.yaw());
     player.setXRot(snapshot.pitch());
 
     ticksRemaining--;
 
     if(ticksRemaining <= 0){
+        history.discardNewest(totalTicks);
         stopRewind();
+        ticksRemaining = 0;
+        totalTicks = 0;
     }
+}
+
+public void reset(){
+    rewinding = false;
+    ticksRemaining = 0;
+    totalTicks = 0;
 }
 
 }
