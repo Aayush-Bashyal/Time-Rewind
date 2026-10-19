@@ -25,12 +25,19 @@ public class RewindSettingsScreen extends Screen {
 
         addRenderableWidget(Button.builder(
             Component.literal("-"),
-            button -> selectedSeonds = Math.max(0, selectedSeonds -1)
-        ).bounds(centerX - 100, centerY -10,40,20).build()
-    );
+            button -> {
+                selectedSeonds = Math.max(0, selectedSeonds -1);
+                this.rebuildWidgets();
+            }
+            ).bounds(centerX - 100, centerY -10,  40,  20).build()
+    ); 
 
     addRenderableWidget(Button.builder(Component.literal("+"),
-button -> selectedSeonds = Math.min(15, selectedSeonds +1)
+button -> {
+    
+    selectedSeonds = Math.min(15, selectedSeonds +1);
+    this.rebuildWidgets();
+}
 ).bounds( centerX + 60, centerY - 10, 40, 20).build()
 );
 
@@ -61,20 +68,27 @@ public void extractRenderState(
     super.extractRenderState(graphics, mouseX, mouseY, delta);
 
     graphics.centeredText(this.font, 
-                        Component.literal("Time Rewind"),
+                        this.title,
                         this.width / 2,
-                        this.height /2 -55,
-                        0xFFFFFF
+                        90,
+                        -1
     );
 
     graphics.centeredText(
         this.font,
         Component.literal(selectedSeonds + " seconds"),
-        this.width /2 ,
-        this.height /2 -5,
-        0x55FF55
-
+        this.width / 2,
+        120,
+        -1
     );
+
+    graphics.centeredText(this.font,
+         Component.literal("Choose how many seconds to rewind"),
+          this.width/2,
+          140,
+        0xAAAAAA);
+
+
 }
     
     
