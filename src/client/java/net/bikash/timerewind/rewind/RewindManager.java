@@ -37,7 +37,8 @@ public RewindManager(PlayerHistory history){
 }
 
 public void beginRewind(Minecraft client){
-    if(rewinding || client.player == null){
+
+    if(rewinding || client.player == null || client.level == null){
 return;
     }
 
@@ -57,7 +58,13 @@ return;
 }
 
 public void rewindOneTick(Minecraft client){
-    if(!rewinding || client.player == null  || client.level == null){
+
+    if(!rewinding){
+        return;
+    }
+
+    if(client.player == null || client.level == null){
+        reset();
         return;
     }
 

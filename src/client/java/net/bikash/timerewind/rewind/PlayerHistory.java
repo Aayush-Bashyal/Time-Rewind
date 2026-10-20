@@ -77,7 +77,7 @@ public class PlayerHistory {
 
         public void discardNewest(int ticks){
             for(int i=0; i<ticks && !history.isEmpty(); i++){
-                history.remove();
+                history.removeLast();
             }
         }
 
