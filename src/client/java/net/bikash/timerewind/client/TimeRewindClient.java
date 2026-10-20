@@ -42,7 +42,7 @@ ClientTickEvents.END_CLIENT_TICK.register(client -> {
 	
 	}
 
-	if(rewindKey.consumeClick()){
+	if(rewindKey.consumeClick() ){
 		REWIND_MANAGER.beginRewind(client);
 		
 	}

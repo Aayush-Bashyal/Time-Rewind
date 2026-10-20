@@ -88,9 +88,7 @@ public void rewindOneTick(Minecraft client){
 
     if(ticksRemaining <= 0){
         history.discardNewest(totalTicks);
-        stopRewind();
-        ticksRemaining = 0;
-        totalTicks = 0;
+      reset();
     }
 }
 
