@@ -1,29 +1,29 @@
 package net.bikash.timerewind.rewind.world;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
-import com.jcraft.jorbis.Block;
+
 
 public class WorldHistory {
     
     private static final int MAX_HISTORY_TICKS = 20*15;
 
-    private final Deque<BlockChange> history = new ArrayDeque<>();
+    private final Deque<List<BlockChange>> history = new ArrayDeque<>();
 
-    public void record(BlockChange change){
-        if(change == null){
+    public void record(List<BlockChange> changes){
+        if(changes == null){
             return;
         }
-        history.addLast(change);
+        history.addLast(new ArrayList<>(changes));
+
         while(history.size() > MAX_HISTORY_TICKS){
             history.removeFirst();
         }
     }
-    public BlockChange getLatestChange(){
-        return history.peekLast();
-    }
-    public BlockChange removeLatestChange(){
+    public List<BlockChange> removeLatestTick(){
         return history.pollLast();
     }
 
@@ -31,8 +31,9 @@ public class WorldHistory {
         history.clear();
     }
 
-    public int size(){
+    public int getRecordedTicks(){
         return history.size();
     }
-
+    
+  
 }

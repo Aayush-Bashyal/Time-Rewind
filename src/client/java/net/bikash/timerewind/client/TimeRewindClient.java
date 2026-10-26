@@ -9,6 +9,8 @@ import net.minecraft.client.KeyMapping;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.bikash.timerewind.rewind.RewindManager;
+import net.bikash.timerewind.rewind.world.BlockChangeRecorder;
+import net.bikash.timerewind.rewind.world.WorldHistory;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 
@@ -18,6 +20,10 @@ public class TimeRewindClient implements ClientModInitializer {
 public static final PlayerHistory PLAYER_HISTORY = new PlayerHistory();
 
 public static final RewindManager REWIND_MANAGER = new RewindManager(PLAYER_HISTORY);
+
+public static final WorldHistory WORLD_HISTORY = new WorldHistory();
+
+public static final BlockChangeRecorder BLOCK_CHANGE_RECORDER = new BlockChangeRecorder(WORLD_HISTORY);
 
 private static KeyMapping rewindKey;
 public static KeyMapping.Category rewindCategory;
