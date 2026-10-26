@@ -16,21 +16,17 @@ public boolean isRewinding(){
     return rewinding;
 }
 
-public void startRewind(){
-    rewinding = true;
-}
+
     
 public void stopRewind(){
-    rewinding = false;
+   reset();
 }
 
 public int getTicksRemaining(){
     return ticksRemaining;
 }
 
-public void setTickRemaining(int ticks){
-    ticksRemaining = Math.max(0,ticks);
-}
+
 
 public RewindManager(PlayerHistory history){
     this.history = history;
@@ -74,9 +70,7 @@ public void rewindOneTick(Minecraft client){
     
 
     if(snapshot == null){
-        stopRewind();
-        ticksRemaining = 0;
-        totalTicks = 0;
+        reset();
         return ;
     }
     player.setPos(snapshot.position());
