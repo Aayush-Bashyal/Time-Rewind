@@ -7,22 +7,40 @@ public class BlockChangeRecorder {
     private final WorldHistory history;
     private final List<BlockChange> currentTickChanges = new ArrayList<>();
 
+private boolean recordingEnabled = true;
+
     public BlockChangeRecorder(WorldHistory history){
         this.history = history;
     }
 
+    public void pauseRecording(){
+        recordingEnabled = false;
+    }
+
+    public void resumeRecording(){
+        recordingEnabled = true;
+    }
+
     public void recordChange(BlockChange change){
-        if(change != null){
+        if(change != null && recordingEnabled){
             currentTickChanges.add(change);
         }
     }
 
+    public void setRecordingEnabled(boolean enabled){
+    recordingEnabled = enabled;
+    } 
+
+    public boolean isRecordingEnabled(){
+        return recordingEnabled;
+    }
+
 
     public void finishTick(){
-        if(!currentTickChanges.isEmpty()){
-            history.record(currentTickChanges);
-        }
+        
+        history.record(currentTickChanges);
         currentTickChanges.clear();
+      
     }
 
 

@@ -32,25 +32,26 @@ public RewindManager(PlayerHistory history){
     this.history = history;
 }
 
-public void beginRewind(Minecraft client){
+public boolean beginRewind(Minecraft client){
 
     if(rewinding || client.player == null || client.level == null){
-return;
+return false;
     }
 
     int seconds = RewindConfig.getRewindSeconds();
 
     if(seconds <= 0){
-        return;
+        return false;
     }
     int ticks = seconds * 20;
 
     if(history.getRecordedTicks() <= ticks){
-        return;
+        return false;
     }
    totalTicks = ticks;
     ticksRemaining = ticks;
     rewinding = true;
+    return true;
 }
 
 public void rewindOneTick(Minecraft client){

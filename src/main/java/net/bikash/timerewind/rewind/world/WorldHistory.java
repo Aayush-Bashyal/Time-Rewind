@@ -27,6 +27,17 @@ public class WorldHistory {
         return history.pollLast();
     }
 
+    public List<BlockChange> peekLatestTick(){
+        List<BlockChange> changes = history.peekLast();
+
+        if(changes == null){
+            return null ;
+
+        }
+
+        return new ArrayList<>(changes);
+        }
+
     public void clear(){
         history.clear();
     }
