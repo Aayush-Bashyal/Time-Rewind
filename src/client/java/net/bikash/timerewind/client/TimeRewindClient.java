@@ -71,11 +71,15 @@ ClientTickEvents.END_CLIENT_TICK.register(client -> {
 	
 	}
 
-	if(rewindKey.consumeClick() ){
-	
-			REWIND_MANAGER.beginRewind(client);
-				
-	}
+	while (rewindKey.consumeClick()) {
+    System.out.println("[Time Rewind] R key pressed");
+
+    boolean started = REWIND_MANAGER.beginRewind(client);
+
+    System.out.println("[Time Rewind] Rewind started: " + started);
+   
+}
+
 
 if (REWIND_MANAGER.isRewinding() && !BLOCK_REWIND_MANAGER.isRewindPending()) {
 

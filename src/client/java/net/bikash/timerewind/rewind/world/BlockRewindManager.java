@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import java.util.function.Consumer;
+
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -105,6 +105,11 @@ server.execute(() -> {
 
 
         history.removeLatestTick();
+
+if(onComplete != null){
+    onComplete.run();
+}
+
     } finally {
         rewindPending = false;
     }

@@ -49,7 +49,7 @@ CallbackInfoReturnable<Boolean> cir
     if (level.isClientSide()) {
     return;
 }
-System.out.println("[Time Rewind] setBlock HEAD triggered");
+
    
     if(!ServerBlockChangeRecorder.getRecorder().isRecordingEnabled()){
         return;

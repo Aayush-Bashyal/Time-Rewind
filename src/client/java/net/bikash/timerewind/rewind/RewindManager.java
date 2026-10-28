@@ -32,25 +32,45 @@ public RewindManager(PlayerHistory history){
     this.history = history;
 }
 
-public boolean beginRewind(Minecraft client){
+public boolean beginRewind(Minecraft client) {
+    if (rewinding) {
+        System.out.println("[Time Rewind] Already rewinding!");
+        return false;
+    }
 
-    if(rewinding || client.player == null || client.level == null){
-return false;
+    if (client.player == null || client.level == null) {
+        System.out.println("[Time Rewind] Player or world is missing!");
+        return false;
     }
 
     int seconds = RewindConfig.getRewindSeconds();
 
-    if(seconds <= 0){
+    if (seconds <= 0) {
+        System.out.println("[Time Rewind] Rewind time is zero!");
         return false;
     }
-    int ticks = seconds * 20;
 
-    if(history.getRecordedTicks() <= ticks){
+    int recordedTicks = history.getRecordedTicks();
+    int requestedTicks = seconds * 20;
+
+    // Use the available history, even if it is shorter than requested.
+    int ticks = Math.min(requestedTicks, recordedTicks - 1);
+
+    if (ticks <= 0) {
+        System.out.println(
+            "[Time Rewind] Not enough history: " + recordedTicks + " ticks"
+        );
         return false;
     }
-   totalTicks = ticks;
+
+    totalTicks = ticks;
     ticksRemaining = ticks;
     rewinding = true;
+
+    System.out.println(
+        "[Time Rewind] Rewind started for " + ticks + " ticks!"
+    );
+
     return true;
 }
 
