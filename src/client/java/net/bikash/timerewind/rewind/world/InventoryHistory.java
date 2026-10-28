@@ -13,7 +13,7 @@ public class InventoryHistory {
 
     private final Deque<InventorySnapshot> history = new ArrayDeque<>();
 
-    public void reocrd(Inventory inventory){
+    public void record(Inventory inventory){
         history.addLast(new InventorySnapshot(inventory));
 
         while (history.size() > MAX_HISTORY_TICKS) {

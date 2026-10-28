@@ -36,9 +36,9 @@ public static final WorldHistory WORLD_HISTORY = ServerBlockChangeRecorder.getHi
 
 public static final BlockChangeRecorder BLOCK_CHANGE_RECORDER = ServerBlockChangeRecorder.getRecorder();
 
-public static final ItemPickupRecorder	 ITEM_PICKUP_RECORDER = new ItemPickupRecorder();
+public static final ItemPickupRecorder	 ITEM_PICKUP_RECORDER =  ServerBlockChangeRecorder.getItemPickupRecorder();
 
-public static final ItemDropHistory ITEM_DROP_HISTORY = new ItemDropHistory();
+public static final ItemDropHistory ITEM_DROP_HISTORY =     ServerBlockChangeRecorder.getItemDropHistory();
 
 public static final InventoryHistory INVENTORY_HISTORY = new InventoryHistory();
 
@@ -67,7 +67,7 @@ ClientTickEvents.END_CLIENT_TICK.register(client -> {
 
 		PLAYER_HISTORY.record(client.player);
 
-		INVENTORY_HISTORY.reocrd(client.player.getInventory());
+		INVENTORY_HISTORY.record(client.player.getInventory());
 	
 	}
 
@@ -77,16 +77,18 @@ ClientTickEvents.END_CLIENT_TICK.register(client -> {
 				
 	}
 
-boolean rewinding = REWIND_MANAGER.isRewinding();
+if (REWIND_MANAGER.isRewinding() && !BLOCK_REWIND_MANAGER.isRewindPending()) {
 
-
-  if (rewinding) {
-        BLOCK_REWIND_MANAGER.rewindOneTick(client);
-    }
+   BLOCK_REWIND_MANAGER.rewindOneTick(client,()->{
+	if(REWIND_MANAGER.isRewinding()){
+		REWIND_MANAGER.rewindOneTick(client);
+	}
+   });
+}
 
 	
 
-	REWIND_MANAGER.rewindOneTick(client);
+	
 
 
 });
@@ -114,6 +116,9 @@ ServerTickEvents.END_SERVER_TICK.register(server -> {
 ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 	PLAYER_HISTORY.clear();
 	REWIND_MANAGER.reset();
+	ITEM_PICKUP_RECORDER.clear();
+	ITEM_DROP_HISTORY.clear();
+	 INVENTORY_HISTORY.clear();
 	BLOCK_CHANGE_RECORDER.clear();
 	BLOCK_REWIND_MANAGER.reset();
 });

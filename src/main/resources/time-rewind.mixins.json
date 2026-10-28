@@ -3,7 +3,7 @@
 	"package": "net.bikash.timerewind.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"ExampleMixin",
+	
 		"BlockChangeMixin",
 		"ItemPickupMixin",
 		"ItemDropMixin"

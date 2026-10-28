@@ -4,15 +4,15 @@ package net.bikash.timerewind.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.bikash.timerewind.client.TimeRewindClient;
+import net.bikash.timerewind.rewind.world.ServerBlockChangeRecorder;
 
-@Mixin(Level.class)
+@Mixin(ServerLevel.class)
 public class ItemDropMixin {
  
     
@@ -26,11 +26,9 @@ public class ItemDropMixin {
     ){
         if(entity instanceof ItemEntity itemEntity){
 
-            Level level = (Level) (Object) this;
-
-            if(!level.isClientSide()){
-                TimeRewindClient.ITEM_DROP_HISTORY.record(itemEntity.getUUID());
+             ServerBlockChangeRecorder.getItemDropHistory()
+            .record(itemEntity.getUUID());
             }
         }
     }
-}
+

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 
 import net.minecraft.world.item.ItemStack;
 import net.bikash.timerewind.rewind.world.ItemPickupChange;
+import net.bikash.timerewind.rewind.world.ServerBlockChangeRecorder;
 
 
 @Mixin (ItemEntity.class)
@@ -50,7 +51,7 @@ public class ItemPickupMixin {
             ItemStack pickedUp = timeRewind$stackBeforePickup.copy();
             pickedUp.setCount(pickedUpCount);
 
-            ItemPickupRecorder recorder = net.bikash.timerewind.client.TimeRewindClient.ITEM_PICKUP_RECORDER;
+            ItemPickupRecorder recorder = ServerBlockChangeRecorder.getItemPickupRecorder();
 
             recorder.recordPickup(
                 new ItemPickupChange(

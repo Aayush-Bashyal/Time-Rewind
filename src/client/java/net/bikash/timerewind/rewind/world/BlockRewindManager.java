@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
+import java.util.function.Consumer;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +27,11 @@ public class BlockRewindManager {
           this.inventoryHistory = inventoryHistory;
     }
 
-    public boolean rewindOneTick(Minecraft client){
+    public boolean isRewindPending() {
+    return rewindPending;
+}
+
+    public boolean rewindOneTick(Minecraft client , Runnable onComplete){
 
         if(rewindPending){
             return false;
@@ -46,7 +50,7 @@ if(server == null){
 
        
 
-      WorldHistory.TickChanges   tickChanges = history.removeLatestTick();
+      WorldHistory.TickChanges   tickChanges = history.peekLatestTick();
 
     
 
@@ -54,19 +58,16 @@ if(server == null){
             return false;
         }
 
-          InventorySnapshot inventorySnapshot = inventoryHistory.removeLatest() ;
-        
-        List<BlockChange> changes = tickChanges.blockChanges();
-        List<UUID> droppedItemIds = tickChanges.droppedItemIds();
-
-
+     
         rewindPending = true;
+
+
 server.execute(() -> {
         recorder.pauseRecording();
 
         try{
 
-            for (UUID itemId : droppedItemIds) {
+            for (UUID itemId : tickChanges.droppedItemIds()) {
     for (ServerLevel level : server.getAllLevels()) {
         var entity = level.getEntity(itemId);
 
@@ -77,36 +78,58 @@ server.execute(() -> {
     }
 }
 
+ List<BlockChange> changes = tickChanges.blockChanges();
+
             for(int i=changes.size() -1 ; i>=0;i--){
                 BlockChange change = changes.get(i);
 
-                ServerLevel serverLevel = server.getLevel(change.getDimension());
+                ServerLevel level = server.getLevel(change.getDimension());
  
-                if(serverLevel == null){
-                    continue;
+                  if (level != null) {
+                    level.setBlock(change.getPosition(), change.getOldState(), 3, 512);
                 }
-
-                BlockPos position = change.getPosition(); 
-
-            
-            serverLevel.setBlock(position, change.getOldState(), 3,512);
         } 
 
-        if(inventorySnapshot != null && player!= null){
-            inventorySnapshot.restore(client.player.getInventory());
-        }
+        client.execute(() -> {
+    try {
 
+         if (client.player != player) {
+                        return;
+                    }
+
+                       InventorySnapshot snapshot = inventoryHistory.removeLatest();
+
+         if (snapshot != null) {
+                        snapshot.restore(player.getInventory());
+                    }
+
+
+        history.removeLatestTick();
     } finally {
+        rewindPending = false;
+    }
+});
+
+        
+
+    } catch (RuntimeException    exception){
+        client.execute(() -> rewindPending = false);
+        throw exception;
+    }
+    
+    finally {
         recorder.resumeRecording();
-           rewindPending = false;
+          
     }
 });
     return true;
     }
 
     public void reset() {
+        rewindPending = false;
     history.clear();
     recorder.clear();
+    inventoryHistory.clear();
 }
 
 }
