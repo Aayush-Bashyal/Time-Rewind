@@ -24,7 +24,7 @@ private boolean recordingEnabled = true;
     public void recordChange(BlockChange change){
         if(change != null && recordingEnabled){
             currentTickChanges.add(change);
-             System.out.println("[Time Rewind] Recorded block change: " + change.getPosition());
+           
         }
     }
 
@@ -37,15 +37,20 @@ private boolean recordingEnabled = true;
     }
 
 
-    public void finishTick(){
-        
-        if(!recordingEnabled){
+     public List<BlockChange> finishTickAndGetChanges() {
+        if (!recordingEnabled) {
             currentTickChanges.clear();
-            return;
+            return List.of();
         }
-        history.record(currentTickChanges);
-        System.out.println("[Time Rewind] Changes this tick: " + currentTickChanges.size());
+
+        List<BlockChange> changes = new ArrayList<>(currentTickChanges);
         currentTickChanges.clear();
+        return changes;
+    }
+
+
+    public void finishTick(){
+      history.record(finishTickAndGetChanges());
       
     }
 

@@ -1,6 +1,5 @@
 package net.bikash.timerewind.mixin;
 
-import java.lang.annotation.Inherited;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,12 +36,15 @@ public class ItemPickupMixin {
         ItemEntity itemEntity = (ItemEntity) (Object) this;
 
         if(itemEntity.level().isClientSide() || timeRewind$stackBeforePickup == null){
+            timeRewind$stackBeforePickup = null;
             return;
         }
 
         ItemStack stackAfter = itemEntity.getItem();
 
-        int pickedUpCount = timeRewind$stackBeforePickup.getCount() - (stackAfter.isEmpty()? 0 : stackAfter.getCount());
+        int remainingCount = stackAfter.isEmpty() ? 0 : stackAfter.getCount();
+
+        int pickedUpCount = timeRewind$stackBeforePickup.getCount() - remainingCount;
 
         if(pickedUpCount > 0){
             ItemStack pickedUp = timeRewind$stackBeforePickup.copy();

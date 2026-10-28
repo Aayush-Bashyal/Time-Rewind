@@ -5,7 +5,8 @@
 	"mixins": [
 		"ExampleMixin",
 		"BlockChangeMixin",
-		"ItemPickupMixin"
+		"ItemPickupMixin",
+		"ItemDropMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

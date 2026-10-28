@@ -1,13 +1,14 @@
 package net.bikash.timerewind.rewind.world;
 
 import java.util.List;
-
+import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
 
 public class BlockRewindManager {
     
@@ -48,6 +49,7 @@ if(server == null){
         }
         
         List<BlockChange> changes = tickChanges.blockChanges();
+        List<UUID> droppedItemIds = tickChanges.droppedItemIds();
 
 
         rewindPending = true;
@@ -55,6 +57,18 @@ server.execute(() -> {
         recorder.pauseRecording();
 
         try{
+
+            for (UUID itemId : droppedItemIds) {
+    for (ServerLevel level : server.getAllLevels()) {
+        var entity = level.getEntity(itemId);
+
+        if (entity instanceof ItemEntity itemEntity) {
+            itemEntity.discard();
+            break;
+        }
+    }
+}
+
             for(int i=changes.size() -1 ; i>=0;i--){
                 BlockChange change = changes.get(i);
 

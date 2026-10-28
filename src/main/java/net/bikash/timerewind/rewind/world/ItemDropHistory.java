@@ -7,17 +7,21 @@ import java.util.UUID;
 public class ItemDropHistory {
     
 
-    private final List<UUID> droppedItems = new ArrayList<>();
+    private final List<UUID> currentTickDrops = new ArrayList<>();
 
     public void record(UUID itemId){
-        droppedItems.add(itemId);
+       if(itemId != null){
+        currentTickDrops.add(itemId);
+       }
     }
+public List<UUID> finishTick(){
+    List<UUID> drops = new ArrayList<>(currentTickDrops);
+    currentTickDrops.clear();
+    return drops;
+}
 
-    public List<UUID> getDroppedItems(){
-        return new ArrayList<>(droppedItems);
-    }
 
     public void clear(){
-        droppedItems.clear();
+        currentTickDrops.clear();
     }
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import net.minecraft.world.ticks.TickAccess;
+
 
 
 
@@ -16,15 +16,17 @@ public class WorldHistory {
     private final Deque <TickChanges> history = new ArrayDeque<>();
 
    public void record(List<BlockChange> blockChanges){
-    record(blockChanges,List.of());
+    record(blockChanges,List.of(),List.of());
    }
 
    public void record(List<BlockChange> blockChanges,
-    List<ItemPickupChange> pickupChanges
+    List<ItemPickupChange> pickupChanges,
+      List<java.util.UUID> droppedItemIds
    ){
     history.addLast(new TickChanges (
         blockChanges == null ? List.of() : new ArrayList<>(blockChanges),
-        pickupChanges == null ? List.of() : new ArrayList<>(pickupChanges)
+        pickupChanges == null ? List.of() : new ArrayList<>(pickupChanges),
+         droppedItemIds == null ? List.of() : new ArrayList<>(droppedItemIds)
     ));
 
     while(history.size() > MAX_HISTORY_TICKS){
@@ -48,7 +50,8 @@ public class WorldHistory {
 
    public record TickChanges(
     List<BlockChange> blockChanges,
-    List<ItemPickupChange> pickupChanges
+    List<ItemPickupChange> pickupChanges,
+     List<java.util.UUID> droppedItemIds
    ){}
   
 }
