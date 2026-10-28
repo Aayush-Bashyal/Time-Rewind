@@ -19,6 +19,13 @@ public class WorldHistory {
     record(blockChanges,List.of(),List.of());
    }
 
+public void record(
+        List<BlockChange> blockChanges,
+        List<ItemPickupChange> pickupChanges
+) {
+    record(blockChanges, pickupChanges, List.of());
+}
+
    public void record(List<BlockChange> blockChanges,
     List<ItemPickupChange> pickupChanges,
       List<java.util.UUID> droppedItemIds

@@ -17,6 +17,7 @@ import net.bikash.timerewind.rewind.world.BlockChangeRecorder;
 import net.bikash.timerewind.rewind.world.WorldHistory;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.bikash.timerewind.rewind.world.BlockRewindManager;
+import net.bikash.timerewind.rewind.world.InventoryHistory;
 import net.bikash.timerewind.rewind.world.ItemDropHistory;
 import net.bikash.timerewind.rewind.world.ItemPickupChange;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -39,7 +40,9 @@ public static final ItemPickupRecorder	 ITEM_PICKUP_RECORDER = new ItemPickupRec
 
 public static final ItemDropHistory ITEM_DROP_HISTORY = new ItemDropHistory();
 
-public static final BlockRewindManager BLOCK_REWIND_MANAGER = new BlockRewindManager(WORLD_HISTORY, BLOCK_CHANGE_RECORDER);
+public static final InventoryHistory INVENTORY_HISTORY = new InventoryHistory();
+
+public static final BlockRewindManager BLOCK_REWIND_MANAGER = new BlockRewindManager(WORLD_HISTORY, BLOCK_CHANGE_RECORDER,INVENTORY_HISTORY);
 
 private static KeyMapping rewindKey;
 public static KeyMapping.Category rewindCategory;
@@ -63,6 +66,8 @@ ClientTickEvents.END_CLIENT_TICK.register(client -> {
 	if(client.player != null && !REWIND_MANAGER.isRewinding()){
 
 		PLAYER_HISTORY.record(client.player);
+
+		INVENTORY_HISTORY.reocrd(client.player.getInventory());
 	
 	}
 

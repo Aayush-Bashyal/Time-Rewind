@@ -14,14 +14,17 @@ public class BlockRewindManager {
     
     private final WorldHistory history;
     private final BlockChangeRecorder recorder;
+    private final InventoryHistory inventoryHistory;
     private boolean rewindPending = false;
 
     public BlockRewindManager(
         WorldHistory history,
-        BlockChangeRecorder recorder
+        BlockChangeRecorder recorder,
+         InventoryHistory inventoryHistory
     ){
         this.history = history;
         this.recorder = recorder;
+          this.inventoryHistory = inventoryHistory;
     }
 
     public boolean rewindOneTick(Minecraft client){
@@ -34,6 +37,7 @@ public class BlockRewindManager {
             return false;
         }
 MinecraftServer server = client.getSingleplayerServer();
+var player  = client.player;
 
 if(server == null){
     return false;
@@ -44,9 +48,13 @@ if(server == null){
 
       WorldHistory.TickChanges   tickChanges = history.removeLatestTick();
 
+    
+
         if(tickChanges == null){
             return false;
         }
+
+          InventorySnapshot inventorySnapshot = inventoryHistory.removeLatest() ;
         
         List<BlockChange> changes = tickChanges.blockChanges();
         List<UUID> droppedItemIds = tickChanges.droppedItemIds();
@@ -83,6 +91,11 @@ server.execute(() -> {
             
             serverLevel.setBlock(position, change.getOldState(), 3,512);
         } 
+
+        if(inventorySnapshot != null && player!= null){
+            inventorySnapshot.restore(client.player.getInventory());
+        }
+
     } finally {
         recorder.resumeRecording();
            rewindPending = false;
