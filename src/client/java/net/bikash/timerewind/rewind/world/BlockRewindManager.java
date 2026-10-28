@@ -41,11 +41,14 @@ if(server == null){
 
        
 
-        List<BlockChange> changes = history.removeLatestTick();
+      WorldHistory.TickChanges   tickChanges = history.removeLatestTick();
 
-        if(changes == null){
+        if(tickChanges == null){
             return false;
         }
+        
+        List<BlockChange> changes = tickChanges.blockChanges();
+
 
         rewindPending = true;
 server.execute(() -> {

@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.bikash.timerewind.rewind.world.BlockRewindManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.bikash.timerewind.rewind.world.ServerBlockChangeRecorder;
+import net.bikash.timerewind.rewind.world.ItemPickupRecorder;
 
 
 public class TimeRewindClient implements ClientModInitializer {
@@ -27,6 +28,8 @@ public static final WorldHistory WORLD_HISTORY = ServerBlockChangeRecorder.getHi
 
 
 public static final BlockChangeRecorder BLOCK_CHANGE_RECORDER = ServerBlockChangeRecorder.getRecorder();
+
+public static final ItemPickupRecorder	 ITEM_PICKUP_RECORDER = new ItemPickupRecorder();
 
 public static final BlockRewindManager BLOCK_REWIND_MANAGER = new BlockRewindManager(WORLD_HISTORY, BLOCK_CHANGE_RECORDER);
 
@@ -76,8 +79,10 @@ boolean rewinding = REWIND_MANAGER.isRewinding();
 });
 
 ServerTickEvents.END_SERVER_TICK.register(server -> {
+
 	if(server.isSingleplayer() && !REWIND_MANAGER.isRewinding()){
 		BLOCK_CHANGE_RECORDER.finishTick();
+		ITEM_PICKUP_RECORDER.finishTick();
 	}
 });
 

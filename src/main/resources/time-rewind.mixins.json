@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
 		"ExampleMixin",
-		"BlockChangeMixin"
+		"BlockChangeMixin",
+		"ItemPickupMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

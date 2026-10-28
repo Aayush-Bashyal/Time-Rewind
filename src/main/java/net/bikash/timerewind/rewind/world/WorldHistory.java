@@ -5,46 +5,50 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import net.minecraft.world.ticks.TickAccess;
+
 
 
 public class WorldHistory {
     
     private static final int MAX_HISTORY_TICKS = 20*15;
 
-    private final Deque<List<BlockChange>> history = new ArrayDeque<>();
+    private final Deque <TickChanges> history = new ArrayDeque<>();
 
-    public void record(List<BlockChange> changes){
-        if(changes == null){
-            return;
-        }
-        history.addLast(new ArrayList<>(changes));
+   public void record(List<BlockChange> blockChanges){
+    record(blockChanges,List.of());
+   }
 
-        while(history.size() > MAX_HISTORY_TICKS){
-            history.removeFirst();
-        }
+   public void record(List<BlockChange> blockChanges,
+    List<ItemPickupChange> pickupChanges
+   ){
+    history.addLast(new TickChanges (
+        blockChanges == null ? List.of() : new ArrayList<>(blockChanges),
+        pickupChanges == null ? List.of() : new ArrayList<>(pickupChanges)
+    ));
+
+    while(history.size() > MAX_HISTORY_TICKS){
+        history.removeFirst();
     }
-    public List<BlockChange> removeLatestTick(){
-        return history.pollLast();
-    }
+   }
+   public TickChanges removeLatestTick(){
+    return history.pollLast();
+   }
 
-    public List<BlockChange> peekLatestTick(){
-        List<BlockChange> changes = history.peekLast();
+   public TickChanges peekLatestTick(){
+    return history.peekLast();
+   }
+   public void clear(){
+    history.clear();
+   }
 
-        if(changes == null){
-            return null ;
+   public int getRecordedTicks(){
+    return history.size();
+   }
 
-        }
-
-        return new ArrayList<>(changes);
-        }
-
-    public void clear(){
-        history.clear();
-    }
-
-    public int getRecordedTicks(){
-        return history.size();
-    }
-    
+   public record TickChanges(
+    List<BlockChange> blockChanges,
+    List<ItemPickupChange> pickupChanges
+   ){}
   
 }
