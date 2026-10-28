@@ -18,6 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Level.class)
 public class BlockChangeMixin {
+
+    static {
+    System.out.println("[Time Rewind] BlockChangeMixin class loaded");
+}
     
 
        private static final ThreadLocal<Deque<BlockSnapshot>> SNAPSHOTS =
