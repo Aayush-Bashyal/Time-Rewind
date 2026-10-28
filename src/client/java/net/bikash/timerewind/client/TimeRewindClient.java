@@ -76,7 +76,7 @@ boolean rewinding = REWIND_MANAGER.isRewinding();
 });
 
 ServerTickEvents.END_SERVER_TICK.register(server -> {
-	if(server.isSingleplayer()){
+	if(server.isSingleplayer() && !REWIND_MANAGER.isRewinding()){
 		BLOCK_CHANGE_RECORDER.finishTick();
 	}
 });
@@ -85,6 +85,7 @@ ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 	PLAYER_HISTORY.clear();
 	REWIND_MANAGER.reset();
 	BLOCK_CHANGE_RECORDER.clear();
+	BLOCK_REWIND_MANAGER.reset();
 });
 
 	}

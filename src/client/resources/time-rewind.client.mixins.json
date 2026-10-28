@@ -4,8 +4,8 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"ExampleClientMixin",
-		"TimeRewindPauseMixin",
-		"BlockChangeMixin"
+		"TimeRewindPauseMixin"
+		
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -1,10 +1,9 @@
 {
 	"required": true,
-	"package": "net.bikash.timerewind",
+	"package": "net.bikash.timerewind.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"mixin.ExampleMixin",
-    "mixin.BlockChangeMixin"
+		"ExampleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import net.bikash.timerewind.rewind.world.ServerBlockChangeRecorder;
-import net.bikash.timerewind.client.TimeRewindClient;
+
 import net.bikash.timerewind.rewind.world.BlockChange;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -45,7 +45,7 @@ CallbackInfoReturnable<Boolean> cir
     if (level.isClientSide()) {
     return;
 }
-
+System.out.println("[Time Rewind] setBlock HEAD triggered");
    
     if(!ServerBlockChangeRecorder.getRecorder().isRecordingEnabled()){
         return;
@@ -88,7 +88,7 @@ if(snapshots.isEmpty()){
 SNAPSHOTS.remove();
 }
 
-if(!TimeRewindClient.BLOCK_CHANGE_RECORDER.isRecordingEnabled()){
+if(!ServerBlockChangeRecorder.getRecorder().isRecordingEnabled()){
     return;
 }
 
@@ -100,7 +100,7 @@ BlockState actualState = level.getBlockState(pos);
 
 if(!snapshot.oldState().equals(actualState)){
 
-    TimeRewindClient.BLOCK_CHANGE_RECORDER.recordChange(new BlockChange(snapshot.position(), snapshot.oldState(), actualState));
+    ServerBlockChangeRecorder.getRecorder().recordChange(new BlockChange(snapshot.position(), snapshot.oldState(), actualState, level.dimension()));
 }
 
 }

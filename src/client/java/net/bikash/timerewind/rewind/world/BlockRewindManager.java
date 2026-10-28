@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
@@ -13,6 +13,7 @@ public class BlockRewindManager {
     
     private final WorldHistory history;
     private final BlockChangeRecorder recorder;
+    private boolean rewindPending = false;
 
     public BlockRewindManager(
         WorldHistory history,
@@ -23,6 +24,10 @@ public class BlockRewindManager {
     }
 
     public boolean rewindOneTick(Minecraft client){
+
+        if(rewindPending){
+            return false;
+        }
        
         if(client.level == null || client.player == null){
             return false;
@@ -33,11 +38,7 @@ if(server == null){
     return false;
 }
 
-ServerLevel serverLevel = server.getLevel(Level.OVERWORLD);
 
-if(serverLevel == null){
-    return false;
-}
        
 
         List<BlockChange> changes = history.removeLatestTick();
@@ -45,21 +46,37 @@ if(serverLevel == null){
         if(changes == null){
             return false;
         }
+
+        rewindPending = true;
 server.execute(() -> {
         recorder.pauseRecording();
 
         try{
             for(int i=changes.size() -1 ; i>=0;i--){
                 BlockChange change = changes.get(i);
+
+                ServerLevel serverLevel = server.getLevel(change.getDimension());
+ 
+                if(serverLevel == null){
+                    continue;
+                }
+
                 BlockPos position = change.getPosition(); 
+
             
             serverLevel.setBlock(position, change.getOldState(), 3,512);
         } 
     } finally {
         recorder.resumeRecording();
+           rewindPending = false;
     }
 });
     return true;
     }
+
+    public void reset() {
+    history.clear();
+    recorder.clear();
+}
 
 }
